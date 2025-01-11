@@ -29,6 +29,19 @@ class Character:
         self._berries = berries
         self._statpoints = statpoints
 
+        # stats dictionary
+        self.stats = {
+            "Name": self.name,
+            "Health": self.health,
+            "Strength": self.strength,
+            "Defense": self.defense,
+            "Stamina": self.stamina,
+            "Level": self.level,
+            "Experience": self.experience,
+            "Berries": self.berries,
+            "Stat Points": self.statpoints,
+        }
+
     # Getters
     @property
     def name(self):
@@ -103,41 +116,81 @@ class Character:
     def statpoints(self, statpoints):
         self._statpoints = statpoints
 
+    '''
+    Prints character's stats
+    Able to choose which stats to display
+    '''
     def print_stats(self, display_stats=None):
-        stats = {
-            "Name": self.name,
-            "Health": self.health,
-            "Strength": self.strength,
-            "Defense": self.defense,
-            "Stamina": self.stamina,
-            "Level": self.level,
-            "Experience": self.experience,
-            "Berries": self.berries,
-            "Stat Points": self.statpoints,
-        }
-
         if display_stats is None:
-            display_stats = stats.keys()
+            display_stats = self.stats.keys()
 
         print(f"{self.name}'s stats:")
         for key in display_stats:
-            if key in stats:
-                print(f"{key}: {stats[key]}")
+            if key in self.stats:
+                print(f"{key}: {self.stats[key]}")
 
-    def add_stats(self, stat_points):
-        self.statpoints = stat_points
+    '''
+    Updates a character's stats
+    '''
+    def update_stat(self, stat_name, value):
+        if stat_name in self.stats:
+            setattr(self, stat_name.lower(), value)
+            self.stats[stat_name] = value
 
-        print(f"You have {stat_points} stat points to allocate to your stats")
+    '''
+    CURRENTLY IN PROGRESS
+    Allow user to upgrade their stats
+    '''
+    def upgrade_stats(self):
+        upgradeable_stats = [key for key in self.stats if key not in ["Name", "Level", "Experience", "Berries", "Stat Points"]]
 
-        while(stat_points > 0):
+
+        if self.statpoints <= 0:
+            print("ERROR: You have no stat points to allocate to your stats!")
+            return
+        while(self.statpoints > 0 ):
+            print(f"You have {self.statpoints} stat points to allocate.")
+        
+            print("Select which stat you would like to upgrade")
+            print("0. Exit")
+            for i, stat in enumerate(upgradeable_stats, 1):
+                print(f"{i}. {stat}")
+
             try:
-                add_health = int(input("Enter how many stat points to add to Health: "))
+                choice = int(input("> "))
 
-                stat_points -= add_health
+                if choice == 0:
+                    print("Exiting stat upgrade.")
+                    break
 
-            except ValueError:
-                print("ERROR: Please enter ")
-    
+                if 1 <= choice <= len(upgradeable_stats):
+                    selected_stat = upgradeable_stats[choice - 1]
+                    quantity = int(input(f"How many points would you like to add to {selected_stat}: "))
+
+                    if quantity <= 0:
+                        print("ERROR: Enter a positive integer!")
+                        continue
+                        
+                    if quantity > self.statpoints:
+                        print("ERROR: Not enough stat points available!")
+                        continue
+
+                    new_value = self.stats[selected_stat] + quantity
+                    self.update_stat(selected_stat, new_value)
+                    self.statpoints -= quantity
+                    print(f"SUCCESS: {selected_stat} increased to {self.stats[selected_stat]}!")
+                else:
+                    print("ERROR: Invalid choice!")
+            except ValueError: 
+                print("ERROR: Enter a number!")
+        print("SUCCESS: Stat upgrade(s) complete!")
+
+        
+    '''
+    CURRENTLY IN PROGRESS
+    Allow user to create a character
+    Make them allocate their stat points
+    '''
     def character_creation(self):
         print("Create Your Character")
 
@@ -147,11 +200,12 @@ class Character:
 
         character.print_stats(["Health", "Strength", "Defense", "Stamina"])
 
-        character.add_stats(character.statpoints)
+        character.upgrade_stats()
 
         character.print_stats()
         
 '''
+
 Starting a new game will make you create a character and play the game
 TODO:
     1. Levels
@@ -182,7 +236,7 @@ def how_to_play():
 
 
 def main():
-    print("Welcome to One Piece Roguelike")
+    print("Welcome to Rogue Piece")
 
     while True:
         print("Select an option")
