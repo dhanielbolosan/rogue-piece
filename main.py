@@ -1,7 +1,7 @@
 '''
 Object for a character
 TODO:
-    1. Classes / Crew Posititon
+    1. Classes / Crew Position
         - Fighter
             - Fighting styles
         - Sniper
@@ -18,7 +18,7 @@ TODO:
     endurance, strength, health, agility
 '''
 class Character:
-    def __init__(self, name, health, strength, defense, stamina, level, experience, berries, statpoints):
+    def __init__(self, name, health, strength, defense, stamina, level, experience, berries, statpoints, moves, items):
         self._name = name
         self._health = health
         self._strength = strength
@@ -28,6 +28,8 @@ class Character:
         self._experience = experience
         self._berries = berries
         self._statpoints = statpoints
+        self._moves = []
+        self.items = []
 
         # stats dictionary
         self.stats = {
@@ -78,6 +80,14 @@ class Character:
     @property
     def statpoints(self):
         return self._statpoints
+    
+    @property
+    def moves(self):
+        return self._moves
+    
+    @property
+    def items(self):
+        return self._items
 
     # Setters
     @name.setter
@@ -116,6 +126,14 @@ class Character:
     def statpoints(self, statpoints):
         self._statpoints = statpoints
 
+    @moves.setter
+    def moves(self, moves):
+        self._moves = moves
+
+    @items.setter
+    def items(self, items):
+        self._items = items
+
     '''
     Prints character's stats
     Able to choose which stats to display
@@ -124,7 +142,7 @@ class Character:
         if display_stats is None:
             display_stats = self.stats.keys()
 
-        print(f"{self.name}'s stats:")
+        print(f"\n{self.name}'s stats:")
         for key in display_stats:
             if key in self.stats:
                 print(f"{key}: {self.stats[key]}")
@@ -146,12 +164,12 @@ class Character:
 
 
         if self.statpoints <= 0:
-            print("ERROR: You have no stat points to allocate to your stats!")
+            print("\nERROR: You have no stat points to allocate to your stats!")
             return
         while(self.statpoints > 0 ):
-            print(f"You have {self.statpoints} stat points to allocate.")
+            print(f"\nYou have {self.statpoints} stat points to allocate.")
         
-            print("Select which stat you would like to upgrade")
+            print("\nSelect which stat you would like to upgrade")
             print("0. Exit")
             for i, stat in enumerate(upgradeable_stats, 1):
                 print(f"{i}. {stat}")
@@ -178,7 +196,7 @@ class Character:
                     new_value = self.stats[selected_stat] + quantity
                     self.update_stat(selected_stat, new_value)
                     self.statpoints -= quantity
-                    print(f"SUCCESS: {selected_stat} increased to {self.stats[selected_stat]}!")
+                    print(f"\nSUCCESS: {selected_stat} increased to {self.stats[selected_stat]}!")
                 else:
                     print("ERROR: Invalid choice!")
             except ValueError: 
@@ -196,7 +214,7 @@ class Character:
 
         name = input("Enter your character name: ")
 
-        character = Character(name, 10, 10, 10, 10, 1, 0, 0, 10)
+        character = Character(name, 10, 10, 10, 10, 1, 0, 0, 10, [], [])
 
         character.print_stats(["Health", "Strength", "Defense", "Stamina"])
 
@@ -212,9 +230,11 @@ TODO:
     2. Combat
 '''
 def start():
+    print("\n*************************\n")
     print("Starting Game")
+    print("\n*************************\n")
 
-    user = Character("", 0, 0, 0, 0, 0, 0, 0, 0)
+    user = Character("", 0, 0, 0, 0, 0, 0, 0, 0, [], [])
     user.character_creation()
 
 '''
@@ -236,7 +256,9 @@ def how_to_play():
 
 
 def main():
-    print("Welcome to Rogue Piece")
+    print("\n*************************\n")
+    print("!Welcome to Rogue Piece!")
+    print("\n*************************\n")
 
     while True:
         print("Select an option")
@@ -248,21 +270,20 @@ def main():
         try:
             choice = int(input("> "))
 
-            match choice:
-                case 0:
-                    print("Exiting")
-                    break
-                case 1:
-                    start()
-                    break
-                case 2:
-                    load()
-                    break
-                case 3:
-                    how_to_play()
-                    break
-                case _:
-                    print("ERROR: Enter a valid choice!")
+            if choice == 0:
+                print("Exiting")
+                break
+            elif choice == 1:
+                start()
+                break
+            elif choice == 2:
+                load()
+                break
+            elif choice == 3:
+                how_to_play()
+                break
+            else:
+                print("ERROR: Enter a valid choice!")
         except ValueError:
             print("ERROR: Enter a number!")
 
