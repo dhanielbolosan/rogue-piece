@@ -355,6 +355,12 @@ class Enemy:
     @items.setter
     def moves(self, items):
         self._items = items
+
+    '''
+    Take damage
+    '''
+    def take_damage(self, damage):
+        self.health -= damage
         
 
 '''
@@ -396,6 +402,51 @@ def start():
 
     user = Character("", 0, 0, 0, 0, 0, 0, 0, 0, 0, [], [])
     user.character_creation()
+
+'''
+Play Round
+'''
+def play_round(character, enemy):
+    round = 1
+
+    while True:
+        print("Select an option")
+        print("1. Fight")
+        print("2. Items")
+        print("3. Retreat")
+        print("0. Save Game")
+
+        try:
+            choice = int(input("> "))
+
+            if choice == 0:
+                save()
+                break
+            elif choice == 1:
+                fight(character, enemy)
+                break
+            elif choice == 2:
+                print("Items")
+                break
+            elif choice == 3:
+                print("Retreat")
+                break
+        except ValueError:
+            print("ERROR: Enter a number!")
+
+'''
+Fight
+'''
+def fight(character, enemy):
+    print("Fighting")
+
+'''
+Saves the game
+TODO:
+
+'''
+def save():
+    print("Save Game")
 
 '''
 Load Game Saves
